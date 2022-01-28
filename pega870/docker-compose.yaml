@@ -1,0 +1,92 @@
+# Use postgres/example user/password credentials
+# sometimes need to call "truncate data.pr_data_stream_nodes;"
+# $ docker-compose --profile install up -d
+# $ docker-compose --profile run up -d
+version: '3.1'
+services:
+
+  pega870-web-db:
+    image: postgres:12-alpine
+    networks:
+      - pega870_net
+    restart: unless-stopped
+
+  pega870-cdh-db:
+    image: postgres:12-alpine
+    networks:
+      - pega870_net
+    restart: unless-stopped
+
+  cassandra870-cdh:
+    profiles:
+      - run
+    image: cassandra:3
+    networks:
+      - pega870_net
+
+  pega870-web:
+    image: pegasystems/pega
+    container_name: pega870-web
+    profiles:
+      - run
+    depends_on:
+      - "pega870-web-db"
+    environment:
+      NODE_TYPE: "BackgroundProcessing,WebUser,Search,Stream"
+      NODE_TIER: "web"
+      JDBC_URL: "jdbc:postgresql://pega870-web-db:5432/postgres"
+    networks:
+      - pega870_net
+    restart: unless-stopped
+
+  pega870-cdh:
+    image: pegasystems/pega
+    container_name: pega870-cdh
+    profiles:
+      - run
+    depends_on:
+      - "pega870-cdh-db"
+    environment:
+      NODE_TYPE: "ADM,Batch,RealTime,RTDG,Stream"
+      NODE_TIER: "cdh"
+      CASSANDRA_CLUSTER: "true"
+      CASSANDRA_NODES: "cassandra870-cdh"
+      JDBC_URL: "jdbc:postgresql://pega870-cdh-db:5432/postgres"
+    networks:
+      - pega870_net
+    restart: unless-stopped
+
+  pega870-web-install:
+    image: kexpert/pega-installer:8.7
+    profiles:
+      - install
+    depends_on:
+      - "pega870-web-db"
+    environment:
+      ACTION: "install"
+      SYSTEM_NAME: "pega870web"
+      PRODUCTION_LEVEL: 2
+      BYPASS_UDF_GENERATION: "true"
+      JDBC_URL: "jdbc:postgresql://pega870-web-db:5432/postgres"
+    networks:
+      - pega870_net
+
+  pega870-cdh-install:
+    image: kexpert/pega-installer:8.7
+    profiles:  
+      - install
+    depends_on:
+      - "pega870-cdh-db"
+    environment:
+      ACTION: "install"
+      SYSTEM_NAME: "pega870cdh"
+      PRODUCTION_LEVEL: 2
+      BYPASS_UDF_GENERATION: "true"
+      JDBC_URL: "jdbc:postgresql://pega870-cdh-db:5432/postgres"
+    networks:
+      - pega870_net
+
+networks:
+  pega870_net:
+    external:
+      name: pega_common

@@ -1,0 +1,41 @@
+# common containers shared across all pega instances
+version: '3.1'
+services:
+  swag:
+    image: linuxserver/swag
+    container_name: swag
+    cap_add:
+        - NET_ADMIN
+    environment:
+        - PUID=1001               #change PUID if needed
+        - PGID=1002               #change PGID if needed
+        - TZ=Europe/Berlin        #change Time Zone if needed
+        - URL=pega.example.com    #insert your domain name - yourdomain.url
+        - VALIDATION=http
+        - EMAIL=pega@example.com  #email for notifications
+    volumes:
+        - ./appdata/swag:/config
+    networks:
+        - pega_common
+    ports:
+        - 443:443
+        - 80:80
+    restart: unless-stopped
+
+  adminer:
+    image: adminer
+    networks:
+        - pega_common
+    restart: unless-stopped
+
+  constellation-87:
+    image: "constellationui/service:8.7.0-ga-latest"
+    volumes:
+      - ./ssl-cert:/host_folder
+    networks:
+      - pega_common
+    command: debug
+
+networks:
+  pega_common:
+    name: pega_common
