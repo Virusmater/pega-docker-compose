@@ -39,59 +39,6 @@ services:
       - pega_common
     command: debug
 
-  pdm-db:
-    image: postgres:12-alpine
-    environment:
-      - POSTGRES_PASSWORD
-    networks:
-      - pega_common
-    restart: unless-stopped
-
-  pdm-install:
-    image: ${PEGA_INSTALL_IMAGE}
-    profiles:
-      - pdm_install
-    depends_on:
-      - "pdm-db"
-    environment:
-      - ACTION=install
-      - SYSTEM_NAME=pdm
-      - PRODUCTION_LEVEL=2
-      - BYPASS_UDF_GENERATION=true
-      - JDBC_URL=jdbc:postgresql://pdm-db:5432/postgres
-      - JDBC_DRIVER_URI
-      - DB_TYPE
-      - JDBC_CLASS
-      - DB_USERNAME
-      - DB_PASSWORD
-      - RULES_SCHEMA
-      - DATA_SCHEMA
-      - CUSTOMERDATA_SCHEMA
-      - ADMIN_PASSWORD
-    networks:
-      - pega_common
-
-  pdm:
-    image: ${PEGA_RUN_IMAGE}
-    container_name: pdm
-    depends_on:
-      - "pdm-db"
-    environment:
-      - NODE_TYPE=BackgroundProcessing,WebUser,Search,Stream
-      - NODE_TIER=web
-      - JDBC_URL=jdbc:postgresql://pdm-db:5432/postgres
-      - JDBC_DRIVER_URI
-      - DB_TYPE
-      - JDBC_CLASS
-      - DB_USERNAME
-      - DB_PASSWORD
-      - RULES_SCHEMA
-      - DATA_SCHEMA
-      - CUSTOMERDATA_SCHEMA
-      - ADMIN_PASSWORD
-    networks:
-      - pega_common
-
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
