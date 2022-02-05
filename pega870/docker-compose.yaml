@@ -115,6 +115,52 @@ services:
       - ADMIN_PASSWORD
     networks:
       - pega870_net
+      
+  pega-web-upgrade:
+    image: ${PEGA_UPGRADE_IMAGE}
+    profiles:
+      - upgrade
+    depends_on:
+      - "pega870-web-db"
+    environment:
+      - ACTION=upgrade
+      - UPGRADE_TYPE=in-place
+      - BYPASS_UDF_GENERATION=true
+      - JDBC_URL=jdbc:postgresql://pega870-web-db:5432/postgres
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+    networks:
+      - pega870_net
+    restart: unless-stopped
+
+  pega-cdh-upgrade:
+    image: ${PEGA_UPGRADE_IMAGE}
+    profiles:
+      - upgrade
+    depends_on:
+      - "pega870-cdh-db"
+    environment:
+      - ACTION=upgrade
+      - UPGRADE_TYPE=in-place
+      - BYPASS_UDF_GENERATION=true
+      - JDBC_URL=jdbc:postgresql://pega870-cdh-db:5432/postgres
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+    networks:
+      - pega870_net
+    restart: unless-stopped
 
 networks:
   pega870_net:
