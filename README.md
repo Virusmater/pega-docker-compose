@@ -18,7 +18,10 @@ Run `$ docker-compose up -d` to start containers that are shared between all Peg
 * Kafka with Zookeper
 
 ### NGINX Reverse Proxy (swag)
-Taking care of certifications and subdomain routing. Configure environment variables in yaml file. Copy `*.subdomain.conf` files to `common/appdata/swag/nginx/proxy-confs/`
+Taking care of certifications and subdomain routing. Configure environment variables in yaml file. Copy `*.conf` files to `common/appdata/swag/nginx/proxy-confs/`:
+```
+cp common/*.conf common/appdata/swag/nginx/proxy-confs
+```
 
 More info ([here](https://docs.linuxserver.io/general/swag))
 
@@ -36,6 +39,7 @@ In order to connect to the common container of Kafka create following DSS with P
 * prconfig/services/stream/**broker**/url/default with value "kafka:29092". Note that documentation provided by Pega is wrong and setting should be for **broker** instead **provider**
 * prconfig/services/stream/name/pattern/default with value "pega-*cluster_name*-{stream.name}". Change *cluster_name* to the unique name of your Pega cluster
 
+KafkaDSS.zip product file from Pega[version] folder has them included.
 
 ## Pega`[version]`
 Before anything update enviromental variables in `.env` file.`
@@ -48,10 +52,17 @@ Contains:
 ### Installer for Web and CDH instances
 Before the first run Pega should be installed to the databases by running 
 
-```$ docker-compose run pega[version]-web-install pega[version]-cdh-install```
+```
+$ docker-compose run pega[version]-cdh-install
+$ docker-compose run pega[version]-web-install
+```
 
 ### Web and CDH instances
-Copy `*.subdomain.conf` files to `common/appdata/swag/nginx/proxy-confs/`
+Copy `*.subdomain.conf` files to `common/appdata/swag/nginx/proxy-confs/`:
+
+```
+cp pega[version]/*.conf common/appdata/swag/nginx/proxy-confs
+```
 
 Run `$ docker-compose up -d` to start Web and CDH instances.
 
@@ -62,11 +73,15 @@ You will have to manually install Pega CDH itself from marketplace.
 ### Cassandra
 Parameters to connect to Cassandra are automatically passed to CDH instance. No need for an additional configuration.
 
-## Pega Deployment Manager Orchestartor (PDM)
+## Pega Deployment Manager Orchestrator (PDM)
 
 Not really required, but nice to play with.
 
 Copy `*.subdomain.conf` files to `common/appdata/swag/nginx/proxy-confs/`
+
+```
+cp pega-pdm/*.conf common/appdata/swag/nginx/proxy-confs
+```
 
 In order to install Pega Platform for Pega Deployment Manager run `$ docker-compose run pdm-install`
 

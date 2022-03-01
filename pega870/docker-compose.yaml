@@ -7,12 +7,16 @@ services:
 
   pega870-web-db:
     image: postgres:13-alpine
+    environment:
+      - POSTGRES_PASSWORD
     networks:
       - pega870_net
     restart: unless-stopped
 
   pega870-cdh-db:
     image: postgres:13-alpine
+    environment:
+      - POSTGRES_PASSWORD
     networks:
       - pega870_net
     restart: unless-stopped
