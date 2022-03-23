@@ -7,6 +7,51 @@ Following images are required to proceed:
 * Pega - `PEGA_RUN_IMAGE` (publicly available on docker hub)
 * Constellation UI - `CONSTELLATION_RUN_IMAGE` ([how to get an image](https://docs.pega.com/user-experience-cosmos-react/87/installing-constellation-using-docker))
 
+## Step-by-step guide
+### Make DNS records for domain and subdomains:
+* constellation`[version]`.`[domain]`
+* pega`[version]`-web.`[domain]`
+* pega`[version]`-cdh.`[domain]` (if need CDH)
+* pdm.`[domain]` (if need PDM)
+
+### SSH to the server and clone repo:
+```
+# git clone https://github.com/Virusmater/pega-docker-compose.git
+```
+### Setup Docker & Docker Compose
+https://docs.docker.com/engine/install/
+
+https://docs.docker.com/compose/install/
+
+Login into your docker registry, e.g Docker Hub, where you have Pega and Constellation Images.
+
+```# docker login```
+### Install common part
+1. `cd pega-docker-compose/common/`
+2. Edit `.env`
+   * Set `CONSTELLATION_RUN_IMAGE` to the image from Pega that was pushed to private repo
+3. Edit `docker-compose.yml`
+   * Change `URL` to your domain name
+   * Change `EMAIL` to your email
+   * Change `SUBDOMAINS` to subdomains you created DNS records for, e.g `pega870-web,pega870-cdh,constellation870,pdm`
+
+4. Run `$ docker-compose up -d`
+5. Check `$ docker logs swag -f` to see if there any errors
+6. `$ cp *.conf appdata/swag/nginx/proxy-confs`
+7. `$ docker restart swag`
+
+
+### Install Basic Pega
+1. `cd pega-docker-compose/pega[version]/`
+2. Edit `.env`. Password with special characters were breaking installation, so try without them.
+    * POSTGRES_PASSWORD=SomeGeneratedPassword
+    * ADMIN_PASSWORD=SomeGeneratedPassword
+    * PEGA_INSTALL_IMAGE=ImageYouBuildAndPushed
+3. `# docker-compose run pega870-web-install`. It will take around 20-30 minutes.
+4. `# docker-compose up -d`
+5. `$ cp *.conf ../common/appdata/swag/nginx/proxy-confs`
+6. `$ docker restart swag`
+
 
 ## Common
 Before anything update enviromental variables in `.env` file.
@@ -42,7 +87,7 @@ In order to connect to the common container of Kafka create following DSS with P
 KafkaDSS.zip product file from Pega[version] folder has them included.
 
 ## Pega`[version]`
-Before anything update enviromental variables in `.env` file.`
+Before anything update environment variables in `.env` file.`
 
 Contains:
 * Installer for Web and CDH instances 
