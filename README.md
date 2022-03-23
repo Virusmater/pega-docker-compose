@@ -51,6 +51,11 @@ Login into your docker registry, e.g Docker Hub, where you have Pega and Constel
 4. `# docker-compose up -d`
 5. `$ cp *.conf ../common/appdata/swag/nginx/proxy-confs`
 6. `$ docker restart swag`
+7. Login using administrator@pega.com with password from `.env`
+8. Import KafkaDSS.zip
+9. Update `ConstellationSvcURL` DSS to `https://constellation870.[domain]/prweb/constellation`
+10. `$ docker restart pega[version]-web`
+11. Clean cache and cookies just to be sure
 
 
 ## Common
