@@ -1,7 +1,5 @@
 # Use postgres/example user/password credentials
 # sometimes need to call "truncate data.pr_data_stream_nodes;"
-# $ docker-compose --profile install up -d
-# $ docker-compose --profile run up -d
 version: '3.1'
 services:
 
@@ -147,7 +145,6 @@ services:
       - CUSTOMERDATA_SCHEMA
     networks:
       - pega870_net
-    restart: unless-stopped
 
   pega-cdh-upgrade:
     image: ${PEGA_UPGRADE_IMAGE}
@@ -170,7 +167,6 @@ services:
       - CUSTOMERDATA_SCHEMA
     networks:
       - pega870_net
-    restart: unless-stopped
 
 networks:
   pega870_net:

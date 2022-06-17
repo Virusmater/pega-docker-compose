@@ -38,6 +38,8 @@ services:
     networks:
       - pega_common
     command: debug
+    restart: unless-stopped
+
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -46,6 +48,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     networks:
       - pega_common
+    restart: unless-stopped
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -60,6 +63,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - pega_common
+    restart: unless-stopped
 
 networks:
   pega_common:
