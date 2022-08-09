@@ -29,11 +29,11 @@ Login into your docker registry, e.g Docker Hub, where you have Pega and Constel
 ### Install common part
 1. `cd pega-docker-compose/common/`
 2. Edit `.env`
-   * Set `CONSTELLATION_RUN_IMAGE` to the image from Pega that was pushed to private repo
+   * Set `CONSTELLATION_RUN_IMAGE_[version]` to the image from Pega that was pushed to private repo
 3. Edit `docker-compose.yml`
    * Change `URL` to your domain name
    * Change `EMAIL` to your email
-   * Change `SUBDOMAINS` to subdomains you created DNS records for, e.g `pega870-web,pega870-cdh,constellation870,pdm`
+   * Change `SUBDOMAINS` to subdomains you created DNS records for, e.g `pega87-web,pega87-cdh,constellation87,pdm`
 
 4. Run `$ docker-compose up -d`
 5. Check `$ docker logs swag -f` to see if there any errors
@@ -53,7 +53,7 @@ Login into your docker registry, e.g Docker Hub, where you have Pega and Constel
 6. `$ docker restart swag`
 7. Login using administrator@pega.com with password from `.env`
 8. Import KafkaDSS.zip
-9. Update `ConstellationSvcURL` DSS to `https://constellation870.[domain]/prweb/constellation`
+9. Update `ConstellationSvcURL` DSS to `https://constellation[version].[domain]/prweb/constellation`
 10. `$ docker restart pega[version]-web`
 11. Clean cache and cookies just to be sure
 
