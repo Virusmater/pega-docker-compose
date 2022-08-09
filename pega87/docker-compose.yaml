@@ -3,44 +3,44 @@
 version: '3.1'
 services:
 
-  pega870-web-db:
+  pega87-web-db:
     image: postgres:13-alpine
     environment:
       - POSTGRES_PASSWORD
     networks:
-      - pega870_net
+      - pega87_net
     restart: unless-stopped
 
-  pega870-cdh-db:
+  pega87-cdh-db:
     image: postgres:13-alpine
     profiles:
       - cdh
     environment:
       - POSTGRES_PASSWORD
     networks:
-      - pega870_net
+      - pega87_net
     restart: unless-stopped
 
-  cassandra870-cdh:
+  cassandra87-cdh:
     image: cassandra:3
     profiles:
       - cdh
     networks:
-      - pega870_net
+      - pega87_net
 
-  pega870-web:
+  pega87-web:
     image: ${PEGA_RUN_IMAGE}
     logging:
       options:
         max-size: "10m"
         max-file: "3"
-    container_name: pega870-web
+    container_name: pega87-web
     depends_on:
-      - "pega870-web-db"
+      - "pega87-web-db"
     environment:
       - NODE_TYPE=BackgroundProcessing,WebUser,Search
       - NODE_TIER=web
-      - JDBC_URL=jdbc:postgresql://pega870-web-db:5432/postgres
+      - JDBC_URL=jdbc:postgresql://pega87-web-db:5432/postgres
       - JDBC_DRIVER_URI
       - DB_TYPE
       - JDBC_CLASS
@@ -51,10 +51,10 @@ services:
       - CUSTOMERDATA_SCHEMA
       - ADMIN_PASSWORD
     networks:
-      - pega870_net
+      - pega87_net
     restart: unless-stopped
 
-  pega870-cdh:
+  pega87-cdh:
     image: ${PEGA_RUN_IMAGE}
     logging:
       options:
@@ -62,15 +62,15 @@ services:
         max-file: "3"
     profiles:
       - cdh
-    container_name: pega870-cdh
+    container_name: pega87-cdh
     depends_on:
-      - "pega870-cdh-db"
+      - "pega87-cdh-db"
     environment:
       - NODE_TYPE=ADM,Batch,RealTime,RTDG,Search,BackgroundProcessing
       - NODE_TIER=cdh
-      - JDBC_URL=jdbc:postgresql://pega870-cdh-db:5432/postgres
+      - JDBC_URL=jdbc:postgresql://pega87-cdh-db:5432/postgres
       - CASSANDRA_CLUSTER=true
-      - CASSANDRA_NODES=cassandra870-cdh
+      - CASSANDRA_NODES=cassandra87-cdh
       - JDBC_DRIVER_URI
       - DB_TYPE
       - JDBC_CLASS
@@ -81,21 +81,21 @@ services:
       - CUSTOMERDATA_SCHEMA
       - ADMIN_PASSWORD
     networks:
-      - pega870_net
+      - pega87_net
     restart: unless-stopped
 
-  pega870-web-install:
+  pega87-web-install:
     image: ${PEGA_INSTALL_IMAGE}
     profiles:
       - install
     depends_on:
-      - "pega870-web-db"
+      - "pega87-web-db"
     environment:
       - ACTION=install
-      - SYSTEM_NAME=pega870web
+      - SYSTEM_NAME=pega87web
       - PRODUCTION_LEVEL=2
       - BYPASS_UDF_GENERATION=true
-      - JDBC_URL=jdbc:postgresql://pega870-web-db:5432/postgres
+      - JDBC_URL=jdbc:postgresql://pega87-web-db:5432/postgres
       - JDBC_DRIVER_URI
       - DB_TYPE
       - JDBC_CLASS
@@ -106,20 +106,20 @@ services:
       - CUSTOMERDATA_SCHEMA
       - ADMIN_PASSWORD
     networks:
-      - pega870_net
+      - pega87_net
 
-  pega870-cdh-install:
+  pega87-cdh-install:
     image: ${PEGA_INSTALL_IMAGE}
     profiles:  
       - install
     depends_on:
-      - "pega870-cdh-db"
+      - "pega87-cdh-db"
     environment:
       - ACTION=install
-      - SYSTEM_NAME=pega870cdh
+      - SYSTEM_NAME=pega87cdh
       - PRODUCTION_LEVEL=2
       - BYPASS_UDF_GENERATION=true
-      - JDBC_URL=jdbc:postgresql://pega870-cdh-db:5432/postgres
+      - JDBC_URL=jdbc:postgresql://pega87-cdh-db:5432/postgres
       - JDBC_DRIVER_URI
       - DB_TYPE
       - JDBC_CLASS
@@ -130,19 +130,19 @@ services:
       - CUSTOMERDATA_SCHEMA
       - ADMIN_PASSWORD
     networks:
-      - pega870_net
+      - pega87_net
       
   pega-web-upgrade:
     image: ${PEGA_UPGRADE_IMAGE}
     profiles:
       - upgrade
     depends_on:
-      - "pega870-web-db"
+      - "pega87-web-db"
     environment:
       - ACTION=upgrade
       - UPGRADE_TYPE=in-place
       - BYPASS_UDF_GENERATION=true
-      - JDBC_URL=jdbc:postgresql://pega870-web-db:5432/postgres
+      - JDBC_URL=jdbc:postgresql://pega87-web-db:5432/postgres
       - JDBC_DRIVER_URI
       - DB_TYPE
       - JDBC_CLASS
@@ -152,19 +152,19 @@ services:
       - DATA_SCHEMA
       - CUSTOMERDATA_SCHEMA
     networks:
-      - pega870_net
+      - pega87_net
 
   pega-cdh-upgrade:
     image: ${PEGA_UPGRADE_IMAGE}
     profiles:
       - upgrade
     depends_on:
-      - "pega870-cdh-db"
+      - "pega87-cdh-db"
     environment:
       - ACTION=upgrade
       - UPGRADE_TYPE=in-place
       - BYPASS_UDF_GENERATION=true
-      - JDBC_URL=jdbc:postgresql://pega870-cdh-db:5432/postgres
+      - JDBC_URL=jdbc:postgresql://pega87-cdh-db:5432/postgres
       - JDBC_DRIVER_URI
       - DB_TYPE
       - JDBC_CLASS
@@ -174,9 +174,9 @@ services:
       - DATA_SCHEMA
       - CUSTOMERDATA_SCHEMA
     networks:
-      - pega870_net
+      - pega87_net
 
 networks:
-  pega870_net:
+  pega87_net:
     external:
       name: pega_common

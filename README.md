@@ -47,7 +47,7 @@ Login into your docker registry, e.g Docker Hub, where you have Pega and Constel
     * POSTGRES_PASSWORD=SomeGeneratedPassword
     * ADMIN_PASSWORD=SomeGeneratedPassword
     * PEGA_INSTALL_IMAGE=ImageYouBuildAndPushed
-3. `# docker-compose run pega870-web-install`. It will take around 20-30 minutes.
+3. `# docker-compose run pega87-web-install`. It will take around 20-30 minutes.
 4. `# docker-compose up -d`
 5. `$ cp *.conf ../common/appdata/swag/nginx/proxy-confs`
 6. `$ docker restart swag`

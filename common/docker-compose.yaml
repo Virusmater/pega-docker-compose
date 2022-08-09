@@ -15,7 +15,7 @@ services:
       - URL=pega.example.com    #insert your domain name - yourdomain.url
       - VALIDATION=http
       - EMAIL=pega@example.com  #email for notifications
-      - SUBDOMAINS=pega870-web,pega870-cdh,constellation870,pdm
+      - SUBDOMAINS=pega87-web,pega87-cdh,pega86-web,pega86-cdh,constellation87,constellation86,pdm
     volumes:
       - ./appdata/swag:/config
     networks:
@@ -31,8 +31,8 @@ services:
       - pega_common
     restart: unless-stopped
 
-  constellation870:
-    image: ${CONSTELLATION_RUN_IMAGE}
+  constellation87:
+    image: ${CONSTELLATION_RUN_IMAGE_87}
     volumes:
       - ./ssl-cert:/host_folder
     networks:
@@ -40,6 +40,14 @@ services:
     command: debug
     restart: unless-stopped
 
+  constellation86:
+    image: ${CONSTELLATION_RUN_IMAGE_86}
+    volumes:
+      - ./ssl-cert:/host_folder
+    networks:
+      - pega_common
+    command: debug
+    restart: unless-stopped
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
