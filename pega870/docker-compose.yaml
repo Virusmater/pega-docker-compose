@@ -30,6 +30,10 @@ services:
 
   pega870-web:
     image: ${PEGA_RUN_IMAGE}
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     container_name: pega870-web
     depends_on:
       - "pega870-web-db"
@@ -52,6 +56,10 @@ services:
 
   pega870-cdh:
     image: ${PEGA_RUN_IMAGE}
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     profiles:
       - cdh
     container_name: pega870-cdh
