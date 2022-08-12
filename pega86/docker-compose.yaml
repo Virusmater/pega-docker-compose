@@ -27,6 +27,7 @@ services:
       - cdh
     networks:
       - pega86_net
+    restart: unless-stopped
 
   pega86-web:
     image: ${PEGA_RUN_IMAGE}
