@@ -40,6 +40,15 @@ services:
     command: debug
     restart: unless-stopped
 
+  constellation88:
+    image: ${CONSTELLATION_RUN_IMAGE_88}
+    volumes:
+      - ./ssl-cert:/host_folder
+    networks:
+      - pega_common
+    command: debug
+    restart: unless-stopped
+
   constellation86:
     image: ${CONSTELLATION_RUN_IMAGE_86}
     volumes:
