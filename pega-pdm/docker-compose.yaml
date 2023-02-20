@@ -9,7 +9,7 @@ services:
     environment:
       - POSTGRES_PASSWORD
     networks:
-      - pega_common
+      - pdm_net
     restart: unless-stopped
 
   pdm-install:
