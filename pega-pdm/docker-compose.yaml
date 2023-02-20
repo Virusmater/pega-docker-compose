@@ -38,6 +38,10 @@ services:
 
   pdm:
     image: ${PEGA_RUN_IMAGE}
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
     container_name: pdm
     depends_on:
       - "pdm-db"
