@@ -103,8 +103,9 @@ Contains:
 Before the first run Pega should be installed to the databases by running 
 
 ```
-$ docker-compose run pega[version]-cdh-install
 $ docker-compose run pega[version]-web-install
+$ docker-compose --profile cdh run pega[version]-cdh-install
+
 ```
 
 ### Web and CDH instances
@@ -114,7 +115,9 @@ Copy `*.subdomain.conf` files to `common/appdata/swag/nginx/proxy-confs/`:
 cp pega[version]/*.conf common/appdata/swag/nginx/proxy-confs
 ```
 
-Run `$ docker-compose up -d` to start Web and CDH instances.
+Run `$ docker-compose up -d` to start Web instance.
+Run `$ docker-compose --profile cdh up -d` to start Web and CDH instances.
+
 
 Do not forget to update DSSs for Kafka, Constellation, ExternalMKTData.
 
