@@ -116,6 +116,7 @@ cp pega[version]/*.conf common/appdata/swag/nginx/proxy-confs
 ```
 
 Run `$ docker-compose up -d` to start Web instance.
+
 Run `$ docker-compose --profile cdh up -d` to start Web and CDH instances.
 
 
