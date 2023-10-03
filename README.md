@@ -51,7 +51,7 @@ Login into your docker registry, e.g Docker Hub, where you have Pega and Constel
 6. `$ docker restart swag`
 7. Login using administrator@pega.com with password from `.env`
 8. Update `ConstellationPegaStaticURL` DSS to `https://release.constellation.pega.io`
-9. Update `ConstellationSvcURL` DSS to `https://constellation[version].[domain]//c11n-appstatic`
+9. Update `ConstellationSvcURL` DSS to `https://constellation[version].[domain]/c11n-appstatic`
 10. `$ docker restart pega[version]-web`
 11. Clean cache and cookies just to be sure
 
