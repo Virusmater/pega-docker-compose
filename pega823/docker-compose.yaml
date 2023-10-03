@@ -54,7 +54,7 @@ services:
       - STREAM_BOOTSTRAP_SERVERS
       - STREAM_NAME_PATTERN
       - STREAM_SECURITY_PROTOCOL
-      - STREAM_SASL_MECHANIS
+      - STREAM_SASL_MECHANISM
     networks:
       - pega823_net
     restart: unless-stopped
