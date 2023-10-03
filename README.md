@@ -81,16 +81,6 @@ Update `CONSTELLATION_RUN_IMAGE` variable in `.env`. Update `ConstellationSvcURL
 ### Adminer
 Doesn't require much configuration, all database connections are stored on the client side.
 
-### Kafka with Zookeper
-Starting Pega 8.7 it is deprecated to have nodes of type Stream. External Kafka services has to be used instead.
-
-In order to connect to the common container of Kafka create following DSS with Pega-Engine owning ruleset:
-* prconfig/services/stream/provider/default with value "ExternalKafka"
-* prconfig/services/stream/**broker**/url/default with value "kafka:29092". Note that documentation provided by Pega is wrong and setting should be for **broker** instead **provider**
-* prconfig/services/stream/name/pattern/default with value "pega-*cluster_name*-{stream.name}". Change *cluster_name* to the unique name of your Pega cluster
-
-KafkaDSS.zip product file from Pega[version] folder has them included.
-
 ## Pega`[version]`
 Before anything update environment variables in `.env` file.`
 

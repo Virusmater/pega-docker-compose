@@ -1,0 +1,187 @@
+# Use postgres/example user/password credentials
+# sometimes need to call "truncate data.pr_data_stream_nodes;"
+version: '3.1'
+services:
+
+  pega823-web-db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_PASSWORD
+    networks:
+      - pega823_net
+    restart: unless-stopped
+
+  pega823-cdh-db:
+    image: postgres:13-alpine
+    profiles:
+      - cdh
+    environment:
+      - POSTGRES_PASSWORD
+    networks:
+      - pega823_net
+    restart: unless-stopped
+
+  cassandra823-cdh:
+    image: cassandra:3
+    profiles:
+      - cdh
+    networks:
+      - pega823_net
+
+  pega823-web:
+    image: ${PEGA_RUN_IMAGE}
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    container_name: pega823-web
+    depends_on:
+      - "pega823-web-db"
+    environment:
+      - NODE_TYPE=BackgroundProcessing,WebUser,Search
+      - NODE_TIER=web
+      - JDBC_URL=jdbc:postgresql://pega823-web-db:5432/postgres
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+      - ADMIN_PASSWORD
+      - EXTERNAL_STREAM
+      - STREAM_BOOTSTRAP_SERVERS
+      - STREAM_NAME_PATTERN
+      - STREAM_SECURITY_PROTOCOL
+      - STREAM_SASL_MECHANIS
+    networks:
+      - pega823_net
+    restart: unless-stopped
+
+  pega823-cdh:
+    image: ${PEGA_RUN_IMAGE}
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    profiles:
+      - cdh
+    container_name: pega823-cdh
+    depends_on:
+      - "pega823-cdh-db"
+    environment:
+      - NODE_TYPE=ADM,Batch,RealTime,RTDG,Search,BackgroundProcessing
+      - NODE_TIER=cdh
+      - JDBC_URL=jdbc:postgresql://pega823-cdh-db:5432/postgres
+      - CASSANDRA_CLUSTER=true
+      - CASSANDRA_NODES=cassandra823-cdh
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+      - ADMIN_PASSWORD
+    networks:
+      - pega823_net
+    restart: unless-stopped
+
+  pega823-web-install:
+    image: ${PEGA_INSTALL_IMAGE}
+    profiles:
+      - install
+    depends_on:
+      - "pega823-web-db"
+    environment:
+      - ACTION=install
+      - SYSTEM_NAME=pega823web
+      - PRODUCTION_LEVEL=2
+      - BYPASS_UDF_GENERATION=true
+      - JDBC_URL=jdbc:postgresql://pega823-web-db:5432/postgres
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+      - ADMIN_PASSWORD
+    networks:
+      - pega823_net
+
+  pega823-cdh-install:
+    image: ${PEGA_INSTALL_IMAGE}
+    profiles:  
+      - install
+    depends_on:
+      - "pega823-cdh-db"
+    environment:
+      - ACTION=install
+      - SYSTEM_NAME=pega823cdh
+      - PRODUCTION_LEVEL=2
+      - BYPASS_UDF_GENERATION=true
+      - JDBC_URL=jdbc:postgresql://pega823-cdh-db:5432/postgres
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+      - ADMIN_PASSWORD
+    networks:
+      - pega823_net
+      
+  pega-web-upgrade:
+    image: ${PEGA_UPGRADE_IMAGE}
+    profiles:
+      - upgrade
+    depends_on:
+      - "pega823-web-db"
+    environment:
+      - ACTION=upgrade
+      - UPGRADE_TYPE=in-place
+      - BYPASS_UDF_GENERATION=true
+      - JDBC_URL=jdbc:postgresql://pega823-web-db:5432/postgres
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+    networks:
+      - pega823_net
+
+  pega-cdh-upgrade:
+    image: ${PEGA_UPGRADE_IMAGE}
+    profiles:
+      - upgrade
+    depends_on:
+      - "pega823-cdh-db"
+    environment:
+      - ACTION=upgrade
+      - UPGRADE_TYPE=in-place
+      - BYPASS_UDF_GENERATION=true
+      - JDBC_URL=jdbc:postgresql://pega823-cdh-db:5432/postgres
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+    networks:
+      - pega823_net
+
+networks:
+  pega823_net:
+    external:
+      name: pega_common

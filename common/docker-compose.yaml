@@ -15,7 +15,7 @@ services:
       - URL=pega.example.com    #insert your domain name - yourdomain.url
       - VALIDATION=http
       - EMAIL=pega@example.com  #email for notifications
-      - SUBDOMAINS=pega87-web,pega87-cdh,pega86-web,pega86-cdh,constellation87,constellation86,pdm
+      - SUBDOMAINS=pega87-web,pega87-cdh,pega86-web,pega86-cdh,constellation87,constellation86,pdm,pega823-web
     volumes:
       - ./appdata/swag:/config
     networks:
