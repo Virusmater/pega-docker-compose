@@ -181,6 +181,15 @@ services:
     networks:
       - pega823_net
 
+  constellation823:
+    image: ${CONSTELLATION_RUN_IMAGE}
+    volumes:
+      - ./ssl-cert:/host_folder
+    networks:
+      - pega823_net
+    command: debug
+    restart: unless-stopped
+
 networks:
   pega823_net:
     external:

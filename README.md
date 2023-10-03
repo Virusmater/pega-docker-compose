@@ -28,17 +28,15 @@ Login into your docker registry, e.g Docker Hub, where you have Pega and Constel
 ```# docker login```
 ### Install common part
 1. `cd pega-docker-compose/common/`
-2. Edit `.env`
-   * Set `CONSTELLATION_RUN_IMAGE_[version]` to the image from Pega that was pushed to private repo
-3. Edit `docker-compose.yml`
+2. Edit `docker-compose.yml`
    * Change `URL` to your domain name
    * Change `EMAIL` to your email
    * Change `SUBDOMAINS` to subdomains you created DNS records for, e.g `pega87-web,pega87-cdh,constellation87,pdm`
 
-4. Run `$ docker-compose up -d`
-5. Check `$ docker logs swag -f` to see if there any errors
-6. `$ cp *.conf appdata/swag/nginx/proxy-confs`
-7. `$ docker restart swag`
+3. Run `$ docker-compose up -d`
+4. Check `$ docker logs swag -f` to see if there any errors
+5. `$ cp *.conf appdata/swag/nginx/proxy-confs`
+6. `$ docker restart swag`
 
 
 ### Install Basic Pega
@@ -47,16 +45,17 @@ Login into your docker registry, e.g Docker Hub, where you have Pega and Constel
     * POSTGRES_PASSWORD=SomeGeneratedPassword
     * ADMIN_PASSWORD=SomeGeneratedPassword
     * PEGA_INSTALL_IMAGE=ImageYouBuildAndPushed
-3. `# docker-compose run pega87-web-install`. It will take around 20-30 minutes.
+3. `# docker-compose run pega[version]-web-install`. It will take around 20-30 minutes.
 4. `# docker-compose up -d`
 5. `$ cp *.conf ../common/appdata/swag/nginx/proxy-confs`
 6. `$ docker restart swag`
 7. Login using administrator@pega.com with password from `.env`
-8. Import KafkaDSS.zip
-9. Update `ConstellationSvcURL` DSS to `https://constellation[version].[domain]/prweb/constellation`
+8. Update `ConstellationPegaStaticURL` DSS to `https://release.constellation.pega.io`
+9. Update `ConstellationSvcURL` DSS to `https://constellation[version].[domain]//c11n-appstatic`
 10. `$ docker restart pega[version]-web`
 11. Clean cache and cookies just to be sure
 
+You can finish there
 
 ## Common
 Before anything update enviromental variables in `.env` file.
