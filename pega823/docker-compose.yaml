@@ -4,7 +4,7 @@ version: '3.1'
 services:
 
   pega823-web-db:
-    image: postgres:13-alpine
+    image: postgres:15-alpine
     environment:
       - POSTGRES_PASSWORD
     networks:
@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
 
   pega823-cdh-db:
-    image: postgres:13-alpine
+    image: postgres:15-alpine
     profiles:
       - cdh
     environment:
@@ -87,7 +87,7 @@ services:
       - ADMIN_PASSWORD
       - EXTERNAL_STREAM
       - STREAM_BOOTSTRAP_SERVERS
-      - STREAM_NAME_PATTERN
+      - STREAM_NAME_PATTERN=pega-pega823-cdh-{stream.name}
       - STREAM_SECURITY_PROTOCOL
       - STREAM_SASL_MECHANISM
     networks:
