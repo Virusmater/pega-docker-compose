@@ -85,6 +85,11 @@ services:
       - DATA_SCHEMA
       - CUSTOMERDATA_SCHEMA
       - ADMIN_PASSWORD
+      - EXTERNAL_STREAM
+      - STREAM_BOOTSTRAP_SERVERS
+      - STREAM_NAME_PATTERN
+      - STREAM_SECURITY_PROTOCOL
+      - STREAM_SASL_MECHANISM
     networks:
       - pega823_net
     restart: unless-stopped
