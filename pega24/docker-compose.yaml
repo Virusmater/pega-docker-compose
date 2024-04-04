@@ -1,0 +1,90 @@
+services:
+
+  pega-web-db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_PASSWORD
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  cassandra:
+    image: cassandra:3
+
+  pega-web:
+    image: ${PEGA_RUN_IMAGE}
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    container_name: pega-web
+    depends_on:
+      - "pega-web-db"
+    environment:
+      - NODE_TYPE=BackgroundProcessing,WebUser,Search
+      - NODE_TIER=web
+      - JDBC_URL=jdbc:postgresql://pega-web-db:5432/postgres
+      - CASSANDRA_CLUSTER=true
+      - CASSANDRA_NODES=cassandra
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+      - ADMIN_PASSWORD
+      - EXTERNAL_STREAM
+      - STREAM_BOOTSTRAP_SERVERS
+      - STREAM_NAME_PATTERN
+      - STREAM_SECURITY_PROTOCOL
+      - STREAM_SASL_MECHANIS
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+
+  pega-web-install:
+    image: ${PEGA_INSTALL_IMAGE}
+    profiles:
+      - install
+    depends_on:
+      - "pega-web-db"
+    environment:
+      - ACTION=install
+      - SYSTEM_NAME=pegaweb
+      - PRODUCTION_LEVEL=2
+      - BYPASS_UDF_GENERATION=true
+      - JDBC_URL=jdbc:postgresql://pega-web-db:5432/postgres
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+      - ADMIN_PASSWORD
+      
+  pega-web-upgrade:
+    image: ${PEGA_UPGRADE_IMAGE}
+    profiles:
+      - upgrade
+    depends_on:
+      - "pega-web-db"
+    environment:
+      - ACTION=upgrade
+      - UPGRADE_TYPE=in-place
+      - BYPASS_UDF_GENERATION=true
+      - JDBC_URL=jdbc:postgresql://pega-web-db:5432/postgres
+      - JDBC_DRIVER_URI
+      - DB_TYPE
+      - JDBC_CLASS
+      - DB_USERNAME
+      - DB_PASSWORD
+      - RULES_SCHEMA
+      - DATA_SCHEMA
+      - CUSTOMERDATA_SCHEMA
+
+volumes:
+  pgdata:
