@@ -1,29 +1,32 @@
 services:
 
-  pega-web-db:
+  pega-db:
     image: postgres:13-alpine
     environment:
       - POSTGRES_PASSWORD
     volumes:
       - pgdata:/var/lib/postgresql/data
+    profiles:
+      - web
     restart: unless-stopped
 
   cassandra:
     image: cassandra:3
+    restart: unless-stopped
 
-  pega-web:
+  pega:
     image: ${PEGA_RUN_IMAGE}
     logging:
       options:
         max-size: "10m"
         max-file: "3"
-    container_name: pega-web
+    container_name: ${CONTAINER_NAME}
     depends_on:
-      - "pega-web-db"
+      - "pega-db"
     environment:
       - NODE_TYPE=BackgroundProcessing,WebUser,Search
-      - NODE_TIER=web
-      - JDBC_URL=jdbc:postgresql://pega-web-db:5432/postgres
+      - NODE_TIER=${NODE_TIER}
+      - JDBC_URL=jdbc:postgresql://pega-db:5432/postgres
       - CASSANDRA_CLUSTER=true
       - CASSANDRA_NODES=cassandra
       - JDBC_DRIVER_URI
@@ -44,18 +47,16 @@ services:
       - 8080:8080
     restart: unless-stopped
 
-  pega-web-install:
+  pega-install:
     image: ${PEGA_INSTALL_IMAGE}
-    profiles:
-      - install
     depends_on:
-      - "pega-web-db"
+      - "pega-db"
     environment:
       - ACTION=install
       - SYSTEM_NAME=pegaweb
       - PRODUCTION_LEVEL=2
       - BYPASS_UDF_GENERATION=true
-      - JDBC_URL=jdbc:postgresql://pega-web-db:5432/postgres
+      - JDBC_URL=jdbc:postgresql://pega-db:5432/postgres
       - JDBC_DRIVER_URI
       - DB_TYPE
       - JDBC_CLASS
@@ -66,17 +67,17 @@ services:
       - CUSTOMERDATA_SCHEMA
       - ADMIN_PASSWORD
       
-  pega-web-upgrade:
+  pega-upgrade:
     image: ${PEGA_UPGRADE_IMAGE}
     profiles:
       - upgrade
     depends_on:
-      - "pega-web-db"
+      - "pega-db"
     environment:
       - ACTION=upgrade
       - UPGRADE_TYPE=in-place
       - BYPASS_UDF_GENERATION=true
-      - JDBC_URL=jdbc:postgresql://pega-web-db:5432/postgres
+      - JDBC_URL=jdbc:postgresql://pega-db:5432/postgres
       - JDBC_DRIVER_URI
       - DB_TYPE
       - JDBC_CLASS
