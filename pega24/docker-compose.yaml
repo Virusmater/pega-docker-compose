@@ -52,6 +52,8 @@ services:
     image: ${PEGA_INSTALL_IMAGE}
     depends_on:
       - "pega-db"
+    profiles:
+      - install
     environment:
       - ACTION=install
       - SYSTEM_NAME=pegaweb
